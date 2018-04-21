@@ -38,11 +38,22 @@ fn main() {
 
             update_item(&mut items, itemindex);
             write_items(items);
-
         }
-        "delete" => println!("removing a todo item"),
+        "delete" => {
+            print_items(&items);
+
+            println!("which item would you like to delete? Enter the index number:");
+            let itemindex = select_item(&items) - 1;
+
+            delete_item(&mut items, itemindex);
+            write_items(items);
+        }
         _ => println!("unrecognised command"),
     }
+}
+
+fn delete_item(items: &mut Vec<String>, itemindex: usize) {
+    items.remove(itemindex);
 }
 
 fn update_item(items: &mut Vec<String>, itemindex: usize) {
