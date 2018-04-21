@@ -2,6 +2,7 @@ extern crate clap;
 use clap::{Arg, App};
 use std::fs::OpenOptions;
 use std::io::prelude::*;
+use std::io::{self, Read};
 extern crate serde;
 extern crate serde_json;
 
@@ -26,15 +27,40 @@ fn main() {
             write_items(items);
         }
         "list" => {
-            println!("here are all of your items to do:");
-
-            for item in items {
-                println!("* {}", item);
-            }
+            print_items(items);
         }
-        "edit" => println!("editing todo items"),
+        "edit" => {
+            print_items(items);
+
+            println!("which item would you like to edit? Enter the index number:");
+            loop {
+                let mut guess = String::new();
+
+                io::stdin().read_line(&mut guess)
+                    .expect("Failed to read line");
+
+                let guess: u32 = match guess.trim().parse() {
+                    Ok(num) => num,
+                    Err(_) => {
+                        println!("Please enter a number");
+                        continue
+                    },
+                };
+                break;
+            }
+        },
         "delete" => println!("removing a todo item"),
         _ => println!("unrecognised command"),
+    }
+}
+
+fn print_items(items: Vec<String>) {
+    println!("here are all of your items to do:");
+
+    let mut x = 1;
+    for item in items {
+        println!("{} {}", x, item);
+        x+= 1;
     }
 }
 
