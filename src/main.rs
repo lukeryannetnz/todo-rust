@@ -8,7 +8,7 @@ extern crate serde_json;
 fn main() {
     println!("Hello, world!");
     let mut items: Vec<String> = Vec::new();
-
+    
     let app = configure_app();
     let matches = app.get_matches();
     let command = matches.value_of("command").unwrap_or("list");
@@ -18,6 +18,18 @@ fn main() {
             .write(true)
             .create(true)
             .open("todo.txt").unwrap();
+
+    let mut buffer = String::new();
+    file.read_to_string(&mut buffer).unwrap();
+
+    let mut file = OpenOptions::new()
+            .truncate(true)
+            .write(true)
+            .open("todo.txt").unwrap();
+
+    if buffer.len() > 0 {
+        items = serde_json::from_str::<Vec<String>>(&buffer).unwrap();
+    }
 
     match command {
         "new" => {
