@@ -5,6 +5,8 @@ use std::io::prelude::*;
 extern crate serde;
 extern crate serde_json;
 
+static FILEPATH: &'static str = "./todo.txt";
+
 fn main() {
     println!("Welcome to the command line todo manager, written in rust");
 
@@ -43,7 +45,7 @@ fn load_items(mut items: Vec<String>) -> Vec<String> {
         .read(true)
         .write(true)
         .create(true)
-        .open("todo.txt")
+        .open(FILEPATH)
         .unwrap();
 
     file.read_to_string(&mut buffer).unwrap();
@@ -61,7 +63,7 @@ fn write_items(items: Vec<String>) {
     let mut file = OpenOptions::new()
         .truncate(true)
         .write(true)
-        .open("todo.txt")
+        .open(FILEPATH)
         .unwrap();
 
     file.write_all(json.as_bytes()).unwrap();
