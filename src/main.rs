@@ -23,7 +23,6 @@ fn main() {
             let item = matches.value_of("item").unwrap_or("").to_string();
             println!("creating a new todo item. {}", item);
             items.push(item);
-
             write_items(items);
         }
         "list" => {
@@ -31,20 +30,15 @@ fn main() {
         }
         "edit" => {
             print_items(&items);
-
             println!("which item would you like to edit? Enter the index number:");
-
             let itemindex = select_item(&items) - 1;
-
             update_item(&mut items, itemindex);
             write_items(items);
         }
         "delete" => {
             print_items(&items);
-
             println!("which item would you like to delete? Enter the index number:");
             let itemindex = select_item(&items) - 1;
-
             delete_item(&mut items, itemindex);
             write_items(items);
         }
