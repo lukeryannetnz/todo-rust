@@ -6,45 +6,46 @@ extern crate serde;
 extern crate serde_json;
 
 fn main() {
-    println!("Hello, world!");
-    
+    println!("Welcome to the command line todo manager, written in rust");
+
     let app = configure_app();
     let matches = app.get_matches();
     let command = matches.value_of("command").unwrap_or("list");
 
     let mut items: Vec<String> = Vec::new();
-
     items = load_items(items);
-
-    let mut file = OpenOptions::new()
-            .truncate(true)
-            .write(true)
-            .open("todo.txt").unwrap();
 
     match command {
         "new" => {
             let item = matches.value_of("item").unwrap_or("").to_string();
             println!("creating a new todo item. {}", item);
             items.push(item);
-            let json = serde_json::to_string(&items).unwrap();
-            file.write_all(json.as_bytes()).unwrap();
+
+            write_items(items);
         }
-        "list" => println!("listing todo items"),
+        "list" => {
+            println!("here are all of your items to do:");
+
+            for item in items {
+                println!("{}", item);
+            }
+        }
         "edit" => println!("editing todo items"),
         "delete" => println!("removing a todo item"),
         _ => println!("unrecognised command"),
     }
 }
 
-fn load_items(mut items: Vec<String>) -> Vec<String>{
+fn load_items(mut items: Vec<String>) -> Vec<String> {
     let mut buffer = String::new();
 
     let mut file = OpenOptions::new()
-            .read(true)
-            .write(true)
-            .create(true)
-            .open("todo.txt").unwrap();
-  
+        .read(true)
+        .write(true)
+        .create(true)
+        .open("todo.txt")
+        .unwrap();
+
     file.read_to_string(&mut buffer).unwrap();
 
     if buffer.len() > 0 {
@@ -52,6 +53,17 @@ fn load_items(mut items: Vec<String>) -> Vec<String>{
     }
 
     items
+}
+
+fn write_items(items: Vec<String>) {
+    let mut file = OpenOptions::new()
+        .truncate(true)
+        .write(true)
+        .open("todo.txt")
+        .unwrap();
+
+    let json = serde_json::to_string(&items).unwrap();
+    file.write_all(json.as_bytes()).unwrap();
 }
 
 fn configure_app<'a, 'b>() -> clap::App<'a, 'b> {

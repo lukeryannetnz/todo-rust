@@ -1,1 +1,1 @@
-["cook dinner and dessert 2","cook dinner and dessert 2","cook dinner and dessert 2","cook dinner and dessert 3","cook dinner and dessert 4"]
+["cook dinner and dessert","do shopping","brush teeth"]
