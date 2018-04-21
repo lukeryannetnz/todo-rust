@@ -1,6 +1,6 @@
 extern crate clap;
 use clap::{Arg, App};
-use std::fs::File;
+use std::fs::OpenOptions;
 use std::io::prelude::*;
 extern crate serde;
 extern crate serde_json;
@@ -13,7 +13,11 @@ fn main() {
     let matches = app.get_matches();
     let command = matches.value_of("command").unwrap_or("list");
 
-    let mut file = File::create("todo.txt").unwrap();
+    let mut file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .open("todo.txt").unwrap();
 
     match command {
         "new" => {
