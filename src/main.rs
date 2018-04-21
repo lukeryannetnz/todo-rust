@@ -29,7 +29,7 @@ fn main() {
             println!("here are all of your items to do:");
 
             for item in items {
-                println!("{}", item);
+                println!("* {}", item);
             }
         }
         "edit" => println!("editing todo items"),
