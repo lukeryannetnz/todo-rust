@@ -56,13 +56,14 @@ fn load_items(mut items: Vec<String>) -> Vec<String> {
 }
 
 fn write_items(items: Vec<String>) {
+    let json = serde_json::to_string(&items).unwrap();
+
     let mut file = OpenOptions::new()
         .truncate(true)
         .write(true)
         .open("todo.txt")
         .unwrap();
 
-    let json = serde_json::to_string(&items).unwrap();
     file.write_all(json.as_bytes()).unwrap();
 }
 
