@@ -72,6 +72,11 @@ fn select_item(items: &Vec<String>) -> usize {
             }
         };
 
+        if guess < 1 || guess > items.len() {
+            println!("Please enter the index of one of the items.");
+            continue;
+        }
+
         return guess;
     }
 }
