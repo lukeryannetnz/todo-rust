@@ -1,1 +1,1 @@
-["cook dinner and dessert","do shopping","brush teeth"]
+["cook dinner and dessert","eat dessert\n","brush teeth"]

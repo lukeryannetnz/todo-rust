@@ -27,40 +27,62 @@ fn main() {
             write_items(items);
         }
         "list" => {
-            print_items(items);
+            print_items(&items);
         }
         "edit" => {
-            print_items(items);
+            print_items(&items);
 
             println!("which item would you like to edit? Enter the index number:");
-            loop {
-                let mut guess = String::new();
 
-                io::stdin().read_line(&mut guess)
-                    .expect("Failed to read line");
+            let itemindex = select_item(&items) - 1;
 
-                let guess: u32 = match guess.trim().parse() {
-                    Ok(num) => num,
-                    Err(_) => {
-                        println!("Please enter a number");
-                        continue
-                    },
-                };
-                break;
-            }
-        },
+            update_item(&mut items, itemindex);
+            write_items(items);
+
+        }
         "delete" => println!("removing a todo item"),
         _ => println!("unrecognised command"),
     }
 }
 
-fn print_items(items: Vec<String>) {
+fn update_item(items: &mut Vec<String>, itemindex: usize) {
+    println!("please enter a new todo item");
+    let mut buffer = String::new();
+
+    io::stdin().read_line(&mut buffer).expect(
+        "Failed to read line",
+    );
+
+    items[itemindex] = buffer;
+}
+
+fn select_item(items: &Vec<String>) -> usize {
+    loop {
+        let mut guess = String::new();
+
+        io::stdin().read_line(&mut guess).expect(
+            "Failed to read line",
+        );
+
+        let guess: usize = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Please enter a number");
+                continue;
+            }
+        };
+
+        return guess;
+    }
+}
+
+fn print_items(items: &Vec<String>) {
     println!("here are all of your items to do:");
 
     let mut x = 1;
     for item in items {
         println!("{} {}", x, item);
-        x+= 1;
+        x += 1;
     }
 }
 
