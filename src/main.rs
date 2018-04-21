@@ -9,7 +9,29 @@ fn main() {
     println!("Hello, world!");
     let mut items: Vec<String> = Vec::new();
 
-    let matches = App::new("todo")
+    let app = configure_app();
+    let matches = app.get_matches();
+    let command = matches.value_of("command").unwrap_or("list");
+
+    let mut file = File::create("todo.txt").unwrap();
+
+    match command {
+        "new" => {
+            let item = matches.value_of("item").unwrap_or("").to_string();
+            println!("creating a new todo item. {}", item);
+            items.push(item);
+            let json = serde_json::to_string(&items).unwrap();
+            file.write_all(json.as_bytes()).unwrap();
+        }
+        "list" => println!("listing todo items"),
+        "edit" => println!("editing todo items"),
+        "delete" => println!("removing a todo item"),
+        _ => println!("unrecognised command"),
+    }
+}
+
+fn configure_app<'a, 'b>() -> clap::App<'a, 'b> {
+    let app = App::new("todo")
         .version("1.0")
         .author("Luke <luke.ryan@xero.com>")
         .about("Manages todos")
@@ -32,24 +54,6 @@ fn main() {
                     "Contains the todo item text. Should be used with new and edit commands.",
                 )
                 .takes_value(true),
-        )
-        .get_matches();
-
-    let command = matches.value_of("command").unwrap_or("list");
-
-    let mut file = File::create("todo.txt").unwrap();
-
-    match command {
-        "new" => {
-            let item = matches.value_of("item").unwrap_or("").to_string();
-            println!("creating a new todo item. {}", item);
-            items.push(item);
-            let json = serde_json::to_string(&items).unwrap();
-            file.write_all(json.as_bytes()).unwrap();
-        }
-        "list" => println!("listing todo items"),
-        "edit" => println!("editing todo items"),
-        "delete" => println!("removing a todo item"),
-        _ => println!("unrecognised command"),
-    }
+        );
+    app
 }
