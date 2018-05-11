@@ -6,14 +6,15 @@ mod filesystem;
 
 use clap::{Arg, App};
 use std::io::{self};
-use filesystem::FileSystem;
+
+type Persistence = filesystem::FileSystem;
 
 pub trait Load {
     fn load() -> Vec<String>;
 }
 
 pub trait Write {
-    fn write(&self) -> Vec<String>;
+    fn write(Vec<String>);
 }
 
 fn main() {
@@ -23,14 +24,14 @@ fn main() {
     let matches = app.get_matches();
     let command = matches.value_of("command").unwrap_or("list");
 
-    let mut items = FileSystem::load();
+    let mut items = Persistence::load();
 
     match command {
         "new" => {
             let item = matches.value_of("item").unwrap_or("").to_string();
             println!("creating a new todo item. {}", item);
             items.push(item);
-            filesystem::write_items(items);
+            Persistence::write(items);
         }
         "list" => {
             print_items(&items);
@@ -40,14 +41,14 @@ fn main() {
             println!("which item would you like to edit? Enter the index number:");
             let itemindex = select_item(&items) - 1;
             update_item(&mut items, itemindex);
-            filesystem::write_items(items);
+            Persistence::write(items);
         }
         "delete" => {
             print_items(&items);
             println!("which item would you like to delete? Enter the index number:");
             let itemindex = select_item(&items) - 1;
             delete_item(&mut items, itemindex);
-            filesystem::write_items(items);
+            Persistence::write(items);
         }
         _ => println!("unrecognised command"),
     }

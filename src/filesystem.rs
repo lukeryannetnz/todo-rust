@@ -2,6 +2,7 @@ use std::fs::OpenOptions;
 use std::io::{Read};
 use std::io::prelude::*;
 use Load;
+use Write as TodoWrite;
 
 extern crate serde;
 extern crate serde_json;
@@ -31,16 +32,16 @@ impl Load for FileSystem{
     }
 }
 
+impl TodoWrite for FileSystem{
+    fn write(items: Vec<String>) {
+        let json = serde_json::to_string(&items).unwrap();
 
+        let mut file = OpenOptions::new()
+            .truncate(true)
+            .write(true)
+            .open(FILEPATH)
+            .unwrap();
 
-pub fn write_items(items: Vec<String>) {
-    let json = serde_json::to_string(&items).unwrap();
-
-    let mut file = OpenOptions::new()
-        .truncate(true)
-        .write(true)
-        .open(FILEPATH)
-        .unwrap();
-
-    file.write_all(json.as_bytes()).unwrap();
+        file.write_all(json.as_bytes()).unwrap();
+    }
 }
