@@ -128,7 +128,7 @@ fn write_items(items: Vec<String>) {
 }
 
 fn configure_app<'a, 'b>() -> clap::App<'a, 'b> {
-    let app = App::new("todo")
+    App::new("todo")
         .version("1.0")
         .author("Luke <luke.ryan@xero.com>")
         .about("Manages todos")
@@ -151,6 +151,5 @@ fn configure_app<'a, 'b>() -> clap::App<'a, 'b> {
                     "Contains the todo item text. Should be used with new and edit commands.",
                 )
                 .takes_value(true),
-        );
-    app
+        )
 }
