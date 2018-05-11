@@ -2,11 +2,17 @@ extern crate clap;
 use clap::{Arg, App};
 use std::fs::OpenOptions;
 use std::io::prelude::*;
-use std::io::{self, Read};
+use std::io::{self};
 extern crate serde;
 extern crate serde_json;
 
+mod filesystem;
+
 static FILEPATH: &'static str = "./todo.txt";
+
+pub trait Load {
+    fn load(&self) -> Vec<String>;
+}
 
 fn main() {
     println!("Welcome to the command line todo manager, written in rust");
@@ -16,7 +22,7 @@ fn main() {
     let command = matches.value_of("command").unwrap_or("list");
 
     let mut items: Vec<String> = Vec::new();
-    items = load_items(items);
+    items = filesystem::load_items(items);
 
     match command {
         "new" => {
@@ -94,25 +100,6 @@ fn print_items(items: &Vec<String>) {
         println!("{} {}", x, item);
         x += 1;
     }
-}
-
-fn load_items(mut items: Vec<String>) -> Vec<String> {
-    let mut buffer = String::new();
-
-    let mut file = OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .open(FILEPATH)
-        .unwrap();
-
-    file.read_to_string(&mut buffer).unwrap();
-
-    if buffer.len() > 0 {
-        items = serde_json::from_str::<Vec<String>>(&buffer).unwrap();
-    }
-
-    items
 }
 
 fn write_items(items: Vec<String>) {
