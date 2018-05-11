@@ -1,12 +1,19 @@
 extern crate clap;
-use clap::{Arg, App};
-use std::io::{self};
 extern crate serde;
 extern crate serde_json;
+
 mod filesystem;
 
+use clap::{Arg, App};
+use std::io::{self};
+use filesystem::FileSystem;
+
 pub trait Load {
-    fn load(&self) -> Vec<String>;
+    fn load() -> Vec<String>;
+}
+
+pub trait Write {
+    fn write(&self) -> Vec<String>;
 }
 
 fn main() {
@@ -16,8 +23,7 @@ fn main() {
     let matches = app.get_matches();
     let command = matches.value_of("command").unwrap_or("list");
 
-    let mut items: Vec<String> = Vec::new();
-    items = filesystem::load_items(items);
+    let mut items = FileSystem::load();
 
     match command {
         "new" => {

@@ -1,30 +1,37 @@
 use std::fs::OpenOptions;
 use std::io::{Read};
 use std::io::prelude::*;
+use Load;
 
 extern crate serde;
 extern crate serde_json;
 
 static FILEPATH: &'static str = "./todo.txt";
+pub struct FileSystem;
 
-pub fn load_items(mut items: Vec<String>) -> Vec<String> {
-    let mut buffer = String::new();
+impl Load for FileSystem{
+    fn load() -> Vec<String> {
+        let mut items: Vec<String> = Vec::new();
+        let mut buffer = String::new();
 
-    let mut file = OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .open(FILEPATH)
-        .unwrap();
+        let mut file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .open(FILEPATH)
+            .unwrap();
 
-    file.read_to_string(&mut buffer).unwrap();
+        file.read_to_string(&mut buffer).unwrap();
 
-    if buffer.len() > 0 {
-        items = serde_json::from_str::<Vec<String>>(&buffer).unwrap();
+        if buffer.len() > 0 {
+            items = serde_json::from_str::<Vec<String>>(&buffer).unwrap();
+        }
+
+        items
     }
-
-    items
 }
+
+
 
 pub fn write_items(items: Vec<String>) {
     let json = serde_json::to_string(&items).unwrap();
