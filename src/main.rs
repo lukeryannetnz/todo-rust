@@ -1,13 +1,15 @@
 extern crate clap;
 extern crate serde;
 extern crate serde_json;
+extern crate postgres;
 
 mod filesystem;
+mod pg;
 
 use clap::{Arg, App};
 use std::io::{self};
 
-type Persistence = filesystem::FileSystem;
+type Persistence = pg::PostgresDb;
 
 pub trait Load {
     fn load() -> Vec<String>;
