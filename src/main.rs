@@ -1,13 +1,20 @@
+#![feature(plugin)]
+#![plugin(rocket_codegen)]
+
+#[macro_use] extern crate serde_derive;
+#[macro_use] extern crate rocket_contrib;
 extern crate clap;
 extern crate serde;
 extern crate serde_json;
 extern crate postgres;
+extern crate rocket;
 
 mod filesystem;
 mod pg;
 
 use clap::{Arg, App};
 use std::io::{self};
+use rocket_contrib::Json;
 
 type Persistence = pg::PostgresDb;
 
@@ -52,8 +59,24 @@ fn main() {
             delete_item(&mut items, itemindex);
             Persistence::write(items);
         }
+        "webserver" => {
+            rocket::ignite()
+                .mount("/", routes![index, list])
+                .launch();
+        }
         _ => println!("unrecognised command"),
     }
+}
+
+#[get("/")]
+fn index() -> &'static str {
+    "todo, world!"
+}
+
+#[get("/list")]
+fn list() -> Json<Vec<String>> {
+    let mut items = Persistence::load();
+    Json(items)
 }
 
 fn delete_item(items: &mut Vec<String>, itemindex: usize) {

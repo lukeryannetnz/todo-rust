@@ -19,7 +19,7 @@ impl Load for PostgresDb{
                   )", &[]).unwrap();
         
         let mut items: Vec<String> = Vec::new();
-g
+
         for row in &conn.query("SELECT item FROM todo", &[]).unwrap() {
             items.push(row.get(0));
         };
